@@ -13,6 +13,7 @@ const StudentPage: React.FC = () => {
     section: '',
     from: '',
     to: '',
+    days: '1',
     reason: ''
   });
 
@@ -23,13 +24,21 @@ const StudentPage: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formType = activeForm;
-    addForm({
+    if (formType === 'none') return;
+
+    const result = await addForm({
       type: formType,
       ...formData
     });
+
+    if (result && result.error) {
+      alert(`Error submitting form: ${result.error}. Please make sure the backend server is running.`);
+      return;
+    }
+
     alert('Form submitted successfully! Your mentor will review it.');
     setFormData({
       name: '',
@@ -38,6 +47,7 @@ const StudentPage: React.FC = () => {
       section: '',
       from: '',
       to: '',
+      days: '1',
       reason: ''
     });
     setActiveForm('none');
@@ -64,8 +74,8 @@ const StudentPage: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       {/* Header */}
       <div className="bg-gray-800/50 backdrop-blur-sm border-b border-gray-700">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center gap-4">
+        <div className="container mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="flex items-center gap-4 w-full sm:w-auto">
             <button
               onClick={() => navigate('/')}
               className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-all duration-200"
@@ -77,8 +87,8 @@ const StudentPage: React.FC = () => {
                 <BookOpen size={20} className="text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">Student Dashboard</h1>
-                <p className="text-gray-400 text-sm">K.S.R. College of Engineering</p>
+                <h1 className="text-lg md:text-xl font-bold text-white">Student Dashboard</h1>
+                <p className="text-gray-400 text-xs text-nowrap">K.S.R. COLLEGE OF ENGINEERING</p>
               </div>
             </div>
           </div>
@@ -190,24 +200,47 @@ const StudentPage: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-white font-medium mb-2">From</label>
+                    <label className="block text-white font-medium mb-2">Date</label>
                     <input
                       type="date"
                       name="from"
                       value={formData.from}
-                      onChange={handleInputChange}
+                      onChange={(e) => {
+                        const newFrom = e.target.value;
+                        let newTo = '';
+                        if (newFrom) {
+                          // Use noon to avoid timezone shifting issues
+                          const date = new Date(newFrom + 'T12:00:00');
+                          const days = parseInt(formData.days) || 1;
+                          date.setDate(date.getDate() + days - 1);
+                          newTo = date.toISOString().split('T')[0];
+                        }
+                        setFormData(prev => ({ ...prev, from: newFrom, to: newTo }));
+                      }}
                       className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-green-500 focus:outline-none"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-white font-medium mb-2">To</label>
+                    <label className="block text-white font-medium mb-2">Number of Days</label>
                     <input
-                      type="date"
-                      name="to"
-                      value={formData.to}
-                      onChange={handleInputChange}
+                      type="number"
+                      name="days"
+                      min="1"
+                      max="30"
+                      value={formData.days}
+                      onChange={(e) => {
+                        const newDays = e.target.value;
+                        let newTo = formData.to;
+                        if (formData.from) {
+                          const date = new Date(formData.from + 'T12:00:00');
+                          const days = parseInt(newDays) || 1;
+                          date.setDate(date.getDate() + days - 1);
+                          newTo = date.toISOString().split('T')[0];
+                        }
+                        setFormData(prev => ({ ...prev, days: newDays, to: newTo }));
+                      }}
                       className="w-full p-3 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-green-500 focus:outline-none"
                       required
                     />

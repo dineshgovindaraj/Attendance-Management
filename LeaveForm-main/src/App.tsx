@@ -33,7 +33,7 @@ const RoleCard: React.FC<RoleCardProps> = ({
       <div className="absolute top-0 right-0 w-32 h-32 opacity-10 transform rotate-12 translate-x-8 -translate-y-8">
         <div className={`w-full h-full ${color} rounded-full`}></div>
       </div>
-      
+
 
       {/* Avatar and role icon */}
       <div className="flex flex-col items-center mt-4 mb-6">
@@ -49,14 +49,14 @@ const RoleCard: React.FC<RoleCardProps> = ({
             {icon}
           </div>
         </div>
-        
+
         <h3 className="text-xl font-bold text-center">{name}</h3>
         <p className="text-gray-300 text-center mt-2 font-medium">{description}</p>
       </div>
 
       {/* Action button */}
       <div className="flex justify-center mb-6">
-        <button 
+        <button
           onClick={onClick}
           className={`w-12 h-12 ${color} rounded-full flex items-center justify-center hover:opacity-90 transition-all duration-300 hover:scale-110`}
         >
@@ -107,7 +107,7 @@ const HomePage: React.FC = () => {
       <div className="text-center py-12">
         <div className="flex items-center justify-center gap-3 mb-4">
           <Users className="text-blue-400" size={32} />
-          <h1 className="text-4xl font-bold text-white">K.S.R. COLLEGE OF ENGINEERING</h1>
+          <h1 className="text-2xl md:text-4xl font-bold text-white">K.S.R. COLLEGE OF ENGINEERING</h1>
         </div>
         <p className="text-gray-400 text-lg max-w-2xl mx-auto px-6">
           Connect and collaborate with administrators, teachers, and students in our comprehensive educational platform

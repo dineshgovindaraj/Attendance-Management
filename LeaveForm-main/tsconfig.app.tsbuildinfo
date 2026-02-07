@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/adminpage.tsx","./src/components/loginpage.tsx","./src/components/protectedmentorroute.tsx","./src/components/protectedroute.tsx","./src/components/studentpage.tsx","./src/components/teacherpage.tsx","./src/utils/formstore.ts","./src/utils/studentmanagement.ts"],"errors":true,"version":"5.6.3"}

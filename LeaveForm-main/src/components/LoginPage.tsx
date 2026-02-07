@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Shield, User, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { login } from '../utils/formStore';
 
 interface LoginPageProps {
   userType?: 'admin' | 'mentor';
@@ -12,9 +13,28 @@ const LoginPage: React.FC<LoginPageProps> = ({ userType = 'admin' }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setError('');
+
+    // Try backend login first
+    try {
+      const result = await login({ username, password, role: userType });
+      if (result && result.success) {
+        if (userType === 'admin') {
+          localStorage.setItem('isAdminLoggedIn', 'true');
+          navigate('/admin');
+        } else {
+          localStorage.setItem('isMentorLoggedIn', 'true');
+          navigate('/teacher');
+        }
+        return;
+      }
+    } catch (err) {
+      console.log('Backend login failed, checking local credentials');
+    }
+
+    // Local fallback
     if (userType === 'admin' && username === 'admin' && password === 'admin123') {
       localStorage.setItem('isAdminLoggedIn', 'true');
       navigate('/admin');
